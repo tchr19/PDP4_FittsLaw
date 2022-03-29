@@ -3,7 +3,12 @@ class Target {
   PVector position;
   color targetC; // Target Color
   float targetX, targetY; //
-
+  
+  Target(float targetX, float targetY, int diameter){
+    this.targetX=targetX;
+    this.targetY=targetY;
+    this.diameter=diameter;
+  }
 
   boolean isMouseInside() {
     if (mouseX>=targetX-(diameter/2) && mouseX<=targetX+(diameter/2) && mouseY>=targetY-(diameter/2) && mouseY<=targetY+(diameter/2)) {
@@ -12,7 +17,6 @@ class Target {
       return false;
     }
   }
-
 
   boolean correctClick() {
     if (isMouseInside() && mousePressed) {
@@ -29,8 +33,6 @@ class Target {
       return false;
     }
   }
-
-
 
   void display() {
     ellipse(targetX, targetY, diameter, diameter);
