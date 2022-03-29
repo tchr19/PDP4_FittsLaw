@@ -2,16 +2,17 @@ class Target {
   int diameter;
   PVector position;
   color targetColor = 255; // Target Color
-  float targetX, targetY; //
 
-  Target(float targetX, float targetY, int diameter) {
-    this.targetX=targetX;
-    this.targetY=targetY;
-    this.diameter=diameter;
+  Target(PVector position, int diameter) {
+    this.position = position;
+    this.diameter = diameter;
   }
 
   boolean isMouseInside() {
-    if (mouseX>=targetX-(diameter/2) && mouseX<=targetX+(diameter/2) && mouseY>=targetY-(diameter/2) && mouseY<=targetY+(diameter/2)) {
+    if (mouseX>=position.x-(diameter/2) 
+    && mouseX<=position.x+(diameter/2) 
+    && mouseY>=position.y-(diameter/2) 
+    && mouseY<=position.y+(diameter/2)) {
      println("Mouse is inside target");
       return true;
     } else {
@@ -42,7 +43,7 @@ class Target {
   }
 
   void display() {
-    ellipse(targetX, targetY, diameter, diameter);
     fill(targetColor);
+    ellipse(position.x, position.y, diameter, diameter);
   }
 }
