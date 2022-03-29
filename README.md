@@ -9,7 +9,7 @@
   - I hver mappe skal der være følgende: 
     - En "ReadMe" text file som fortæller lidt omkring koden - Denne må til fordel også gerne kopieres ind i kodens top som et abstract. Gerne begge steder! 
     - Der skal være en fil, som indeholder koden. Er der flere kodefiler, skal de navngives på rigtig vis - Afspejle hvad koden har i sig, så er det en fil der er for en widget, så skal dens navn afspejle det. 
-
+_______
 
 **How to upload a file?**
 1. Stå på forsiden, hvor du kan se indholdet af vores git. 
