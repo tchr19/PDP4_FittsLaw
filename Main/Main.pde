@@ -1,14 +1,18 @@
 Target myTarget;
 
+
 void setup() {
   size(750,750);
   background(25);
   //Target is created
-  myTarget = new Target(200,100,25);
+  myTarget = new Target(200,200,200);
 }
 
 void draw() {
   myTarget.display();
+  myTarget.isMouseInside();
+  myTarget.correctClick();
+  myTarget.falseClick();
 }
 
 //This function calculates the time between clicks (MT)
