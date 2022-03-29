@@ -1,7 +1,7 @@
 class Target {
   int diameter;
   PVector position;
-  color targetC; // Target Color
+  color targetColor = 255; // Target Color
   float targetX, targetY; //
   
   Target(float targetX, float targetY, int diameter){
@@ -36,6 +36,6 @@ class Target {
 
   void display() {
     ellipse(targetX, targetY, diameter, diameter);
-    fill(targetC);
+    fill(targetColor);
   }
 }

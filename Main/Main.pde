@@ -3,6 +3,8 @@ Target myTarget;
 void setup() {
   size(750,750);
   background(25);
+  //Target is created
+  myTarget = new Target(200,100,25);
 }
 
 void draw() {
