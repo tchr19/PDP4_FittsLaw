@@ -5,7 +5,6 @@ class Data {
     Table table = loadTable("data.csv", "header");
 void saveData(int trialNr, int targetDiameter, float clickToTargetDistance, float movementTime) {
   
-
    TableRow row = table.addRow();
    // trialNr = row.setInt("Trial Nr");
     clickToTargetDistance = row.setFloat("Distance");
@@ -13,4 +12,3 @@ void saveData(int trialNr, int targetDiameter, float clickToTargetDistance, floa
     movementTime = row.setFloat("Movement Time");
 
     }
-}
