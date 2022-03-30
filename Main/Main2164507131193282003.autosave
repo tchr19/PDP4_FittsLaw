@@ -1,10 +1,5 @@
-import controlP5.*;
-
-ControlP5 cp5;
 Target myTarget;
 Data myData;
-
-int programState = 0;
 
 int screenBorder = 25;
 
@@ -12,25 +7,32 @@ float previousMillis = 0;
 float currentMillis;
 float movementTime;
 
+float distance;
+float targetDiameter;
+
+float[] distances = { 40,80,160,320 };
+float[] diameters = { 10,20,40,80 };
+
 void setup() {
   size(750,750);
   background(25);
-  cp5 = new ControlP5(this);
-  cp5.addTextfield("FP-ID").setPosition((width/2)-50,20).setSize(100,20);
-  cp5.addButton("START").setPosition((width/2)-30,70).setSize(60,30);
-  
   //Target is created
+  myTarget = new Target(new PVector(width/2, height/2),getParameter(diameters));
 }
 
 void draw() {
   background(25);
-  if(myTarget != null) {
-    myTarget.display();
-  }
+  myTarget.display();
+
+}
+
+float getParameter(float[] parameters) {
+  float parameter = parameters[int(random(parameters.length))];
+  return parameter;
   
 }
 
-PVector calculateNewPosition(int distance) {
+PVector calculateNewPosition(float distance) {
   float angle = random(360);
   float x = mouseX + distance * cos(angle);
   float y = mouseY + distance * sin(angle);
@@ -55,15 +57,18 @@ void handleHit() {
   movementTime = calculateMovementTime(previousMillis, currentMillis);
   previousMillis = currentMillis;
   
-  PVector newPos = calculateNewPosition(200);
+  PVector newPos = calculateNewPosition(getParameter(distances));
   while(newPos.x > width - (myTarget.diameter/2) - screenBorder 
   || newPos.x < 0 + (myTarget.diameter/2) + screenBorder
   || newPos.y > height - (myTarget.diameter/2) - screenBorder
   || newPos.y < 0 + (myTarget.diameter/2) + screenBorder) {
     newPos = calculateNewPosition(200);
   }
-  myTarget = new Target(newPos, 50);
-  print("Movement time: " + movementTime + " ms");
+  myTarget = new Target(newPos, getParameter(diameters));
+  
+  println("Movement time: " + movementTime + " ms");
+  
+  //myData.saveData(targetDiameter, distance, movementTime);
   
 }
 
@@ -71,10 +76,4 @@ void mouseClicked() {
   if(myTarget.isMouseInside()) {
     handleHit();
   }
-}
-
-void START(){
-  println("Knappen virker wee");
-  myTarget = new Target(new PVector(width/2, height/2),50);
-  
 }
