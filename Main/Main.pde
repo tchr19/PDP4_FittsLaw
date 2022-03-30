@@ -25,20 +25,8 @@ void setup() {
 
 void draw() {
   background(25);
+   myTarget.display();
   
-    if (programState == 0){
-     myTarget.display();
-     if (mousePressed){
-       programState = 1;
-     }
-     if (programState == 1){
-       println("program state er nu 1");
-     }
-  }
-
-  
-
- 
 }
 
 PVector calculateNewPosition(int distance) {
