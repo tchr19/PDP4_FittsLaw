@@ -2,8 +2,13 @@ import controlP5.*;
 
 ControlP5 cp5;
 Target myTarget;
+Data myData;
 
 int screenBorder = 25;
+
+float previousMillis = 0;
+float currentMillis;
+float movementTime;
 
 void setup() {
   size(750,750);
@@ -29,8 +34,8 @@ PVector calculateNewPosition(int distance) {
 }
 
 //This function calculates the time between clicks (MT)
-float calculateMovementTime(float start, float end) {
-  return (end - start);
+float calculateMovementTime(float prev, float curr) {
+  return (curr - prev);
 }
 
 //This function calculates the distance between two points
@@ -41,12 +46,11 @@ double calculateDistance(int x1,int y1,int x2, int y2) {
 }
 
 void handleHit() {
-  //PREV MILLIS
-  //CURRENT MILIS
-  //MOVEMENT TIME
-  //DISTANCE TO TARGET CENTER FROM CLICK
-  PVector newPos = calculateNewPosition(200);
+  currentMillis = millis();
+  movementTime = calculateMovementTime(previousMillis, currentMillis);
+  previousMillis = currentMillis;
   
+  PVector newPos = calculateNewPosition(200);
   while(newPos.x > width - (myTarget.diameter/2) - screenBorder 
   || newPos.x < 0 + (myTarget.diameter/2) + screenBorder
   || newPos.y > height - (myTarget.diameter/2) - screenBorder
@@ -54,6 +58,7 @@ void handleHit() {
     newPos = calculateNewPosition(200);
   }
   myTarget = new Target(newPos, 50);
+  print("Movement time: " + movementTime + " ms");
   
 }
 
