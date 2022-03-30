@@ -1,5 +1,3 @@
-
-   
 Target myTarget;
 Data myData;
 
