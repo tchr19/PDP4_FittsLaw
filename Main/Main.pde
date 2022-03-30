@@ -1,3 +1,6 @@
+import controlP5.*;
+ControlP5 cp5;
+
 Target myTarget;
 Data myData;
 
@@ -16,6 +19,9 @@ float[] diameters = { 10,20,40,80 };
 void setup() {
   size(750,750);
   background(25);
+  cp5 = new ControlP5(this);
+  cp5.addButton("START").setPosition((width/2)-30,20).setSize(60,20);
+  cp5.addTextfield("SUBJECT").setPosition(20,20).setSize(200,20);
   //Target is created
   myTarget = new Target(new PVector(width/2, height/2),getParameter(diameters));
 }
