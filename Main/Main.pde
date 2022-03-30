@@ -4,6 +4,8 @@ ControlP5 cp5;
 Target myTarget;
 Data myData;
 
+int programState = 0;
+
 int screenBorder = 25;
 
 float previousMillis = 0;
@@ -14,15 +16,29 @@ void setup() {
   size(750,750);
   background(25);
   cp5 = new ControlP5(this);
+  cp5.addTextfield("FP-ID").setPosition((width/2)-50,20).setSize(100,20);
+  cp5.addButton("START").setPosition((width/2)-30,70).setSize(60,30);
+  
   //Target is created
   myTarget = new Target(new PVector(width/2, height/2),50);
 }
 
 void draw() {
   background(25);
-  myTarget.display();
+  
+    if (programState == 0){
+     myTarget.display();
+     if (mousePressed){
+       programState = 1;
+     }
+     if (programState == 1){
+       println("program state er nu 1");
+     }
+  }
+
   
 
+ 
 }
 
 PVector calculateNewPosition(int distance) {
@@ -66,4 +82,9 @@ void mouseClicked() {
   if(myTarget.isMouseInside()) {
     handleHit();
   }
+}
+
+void START(){
+  println("Knappen virker wee");
+  
 }
