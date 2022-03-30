@@ -29,7 +29,7 @@ void draw() {
 float getParameter(float[] parameters) {
   float parameter = parameters[int(random(parameters.length))];
   return parameter;
-  
+
 }
 
 PVector calculateNewPosition(float distance) {
@@ -56,20 +56,20 @@ void handleHit() {
   currentMillis = millis();
   movementTime = calculateMovementTime(previousMillis, currentMillis);
   previousMillis = currentMillis;
-  
+
   PVector newPos = calculateNewPosition(getParameter(distances));
-  while(newPos.x > width - (myTarget.diameter/2) - screenBorder 
+  while(newPos.x > width - (myTarget.diameter/2) - screenBorder
   || newPos.x < 0 + (myTarget.diameter/2) + screenBorder
   || newPos.y > height - (myTarget.diameter/2) - screenBorder
   || newPos.y < 0 + (myTarget.diameter/2) + screenBorder) {
     newPos = calculateNewPosition(200);
   }
   myTarget = new Target(newPos, getParameter(diameters));
-  
+
   println("Movement time: " + movementTime + " ms");
-  
+
   //myData.saveData(targetDiameter, distance, movementTime);
-  
+
 }
 
 void mouseClicked() {
