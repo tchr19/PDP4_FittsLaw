@@ -3,7 +3,7 @@ ControlP5 cp5;
 
 Target myTarget;
 //Data myData;
-
+//int trialNr;
 int screenBorder = 25;
 
 float previousMillis = 0;
@@ -29,7 +29,7 @@ void setup() {
 void draw() {
   background(25);
   myTarget.display();
-
+  //myData.saveData(trialNr, targetDiameter, distance, movementTime);
 }
 
 float getParameter(float[] parameters) {
