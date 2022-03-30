@@ -2,7 +2,7 @@ import controlP5.*;
 ControlP5 cp5;
 
 Target myTarget;
-Data myData;
+//Data myData;
 
 int screenBorder = 25;
 
