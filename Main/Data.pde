@@ -13,3 +13,4 @@ void saveData(int trialNr, int targetDiameter, float clickToTargetDistance, floa
     movementTime = row.setFloat("Movement Time");
 
     }
+}
