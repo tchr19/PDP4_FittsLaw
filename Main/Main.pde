@@ -1,3 +1,6 @@
+import controlP5.*;
+
+ControlP5 cp5;
 Target myTarget;
 
 int screenBorder = 25;
@@ -5,6 +8,7 @@ int screenBorder = 25;
 void setup() {
   size(750,750);
   background(25);
+  cp5 = new ControlP5(this);
   //Target is created
   myTarget = new Target(new PVector(width/2, height/2),50);
 }
@@ -12,6 +16,7 @@ void setup() {
 void draw() {
   background(25);
   myTarget.display();
+  
 
 }
 
