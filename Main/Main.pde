@@ -29,7 +29,7 @@ void setup() {
 void draw() {
   background(25);
   myTarget.display();
-  //myData.saveData(trialNr, targetDiameter, distance, movementTime);
+
 }
 
 float getParameter(float[] parameters) {
