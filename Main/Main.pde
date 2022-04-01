@@ -1,10 +1,13 @@
 import controlP5.*;
+
 ControlP5 cp5;
 
+Data myData;
 Target myTarget;
 //Data myData;
 //int trialNr;
 int screenBorder = 25;
+int trialNum = 0;
 
 float previousMillis = 0;
 float currentMillis;
@@ -24,12 +27,13 @@ void setup() {
   cp5.addTextfield("SUBJECT").setPosition(20,20).setSize(200,20);
   //Target is created
   myTarget = new Target(new PVector(width/2, height/2),getParameter(diameters));
+  //myData.createTable();
 }
 
 void draw() {
   background(25);
   myTarget.display();
-
+  //myData.saveData(trialNr, targetDiameter, distance, movementTime);
 }
 
 float getParameter(float[] parameters) {
@@ -59,6 +63,7 @@ double calculateDistance(int x1,int y1,int x2, int y2) {
 }
 
 void handleHit() {
+  trialNum += 1;
   currentMillis = millis();
   movementTime = calculateMovementTime(previousMillis, currentMillis);
   previousMillis = currentMillis;
@@ -74,7 +79,7 @@ void handleHit() {
 
   println("Movement time: " + movementTime + " ms");
 
-  //myData.saveData(targetDiameter, distance, movementTime);
+  myData.saveData(targetDiameter, distance, movementTime);
 
 }
 
