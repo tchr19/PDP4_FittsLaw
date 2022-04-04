@@ -3,17 +3,17 @@ class Data {
   TableRow row;
 
  Data(){
-    
+
    table = new Table();
 
    table.addColumn("Diameter");
    table.addColumn("Distance");
    table.addColumn("Movement Time");
   }
- 
+
  //Gem data i csv fil med kolonne navne
  void saveData(float targetDiameter, float distance, float movementTime) {
- 
+
    TableRow row = table.addRow();
    //row.setInt("Trial Nr", trialNr);
    row.setFloat("Diameter",targetDiameter);

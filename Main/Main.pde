@@ -1,10 +1,13 @@
 import controlP5.*;
+
 ControlP5 cp5;
 
+Data myData;
 Target myTarget;
 Data myData;
 
 int screenBorder = 25;
+int trialNum = 0;
 
 float previousMillis = 0;
 float currentMillis;
@@ -30,7 +33,7 @@ void setup() {
 void draw() {
   background(25);
   myTarget.display();
-
+  //myData.saveData(trialNr, targetDiameter, distance, movementTime);
 }
 
 float getParameter(float[] parameters) {
@@ -60,6 +63,7 @@ double calculateDistance(int x1,int y1,int x2, int y2) {
 }
 
 void handleHit() {
+  trialNum += 1;
   currentMillis = millis();
   movementTime = calculateMovementTime(previousMillis, currentMillis);
   previousMillis = currentMillis;
