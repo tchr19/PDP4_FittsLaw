@@ -2,8 +2,8 @@ import controlP5.*;
 ControlP5 cp5;
 
 Target myTarget;
-//Data myData;
-//int trialNr;
+Data myData;
+
 int screenBorder = 25;
 
 float previousMillis = 0;
@@ -24,6 +24,7 @@ void setup() {
   cp5.addTextfield("SUBJECT").setPosition(20,20).setSize(200,20);
   //Target is created
   myTarget = new Target(new PVector(width/2, height/2),getParameter(diameters));
+  myData = new Data();
 }
 
 void draw() {
@@ -74,7 +75,7 @@ void handleHit() {
 
   println("Movement time: " + movementTime + " ms");
 
-  //myData.saveData(targetDiameter, distance, movementTime);
+  myData.saveData(targetDiameter, distance, movementTime);
 
 }
 
