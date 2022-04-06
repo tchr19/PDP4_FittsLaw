@@ -4,8 +4,9 @@ ControlP5 cp5;
 
 Data myData;
 Target myTarget;
-Data myData;
+Startscreen myStartscreen;
 
+String subjectId;
 int screenBorder = 25;
 int trialNum = 0;
 
@@ -19,23 +20,33 @@ float targetDiameter;
 float[] distances = { 40,80,160,320 };
 float[] diameters = { 10,20,40,80 };
 
+//Make a list of combinations for each diameter with all distances
+float[] parameters = {};
+
+
 void setup() {
   size(750,750);
   background(25);
   cp5 = new ControlP5(this);
-  cp5.addButton("START").setPosition((width/2)-30,20).setSize(60,20);
-  cp5.addTextfield("SUBJECT").setPosition(20,20).setSize(200,20);
+  //start = cp5.addButton("Start").setPosition((width/2)-30,20).setSize(60,20);
+  //cp5.addTextfield("SUBJECT").setPosition(20,20).setSize(200,20);
   //Target is created
-  myTarget = new Target(new PVector(width/2, height/2),getParameter(diameters));
   myData = new Data();
+  myStartscreen = new Startscreen();
+  myStartscreen.showPage();
 }
 
 void draw() {
   background(25);
-  myTarget.display();
+  if(myTarget != null) {
+    myTarget.display();
+  }
   //myData.saveData(trialNr, targetDiameter, distance, movementTime);
 }
 
+//Get parameter should retrieve a random parameter combination from the parameters array
+//And remove this from the array afterwards 
+//+ save parameters in distance and diameter variables
 float getParameter(float[] parameters) {
   float parameter = parameters[int(random(parameters.length))];
   return parameter;
@@ -67,20 +78,20 @@ void handleHit() {
   currentMillis = millis();
   movementTime = calculateMovementTime(previousMillis, currentMillis);
   previousMillis = currentMillis;
+  
+  distance = getParameter(distances);
+  targetDiameter = getParameter(diameters);
 
-  PVector newPos = calculateNewPosition(getParameter(distances));
+  PVector newPos = calculateNewPosition(distance);
   while(newPos.x > width - (myTarget.diameter/2) - screenBorder
   || newPos.x < 0 + (myTarget.diameter/2) + screenBorder
   || newPos.y > height - (myTarget.diameter/2) - screenBorder
   || newPos.y < 0 + (myTarget.diameter/2) + screenBorder) {
     newPos = calculateNewPosition(200);
   }
-  myTarget = new Target(newPos, getParameter(diameters));
+  myTarget = new Target(newPos, targetDiameter);
 
-  println("Movement time: " + movementTime + " ms");
-
-  myData.saveData(targetDiameter, distance, movementTime);
-
+  myData.saveData(targetDiameter, distance, movementTime, subjectId);
 }
 
 void mouseClicked() {
@@ -88,3 +99,8 @@ void mouseClicked() {
     handleHit();
   }
 }
+
+void Start() {
+    myStartscreen.hidePage();
+    myTarget = new Target(new PVector(width/2, height/2),50);
+  }
