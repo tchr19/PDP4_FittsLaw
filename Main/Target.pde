@@ -1,7 +1,7 @@
 class Target {
   float diameter;
   PVector position;
-  color targetColor = 255; // Target Color
+  color targetColor = color(255,0,0); // Target Color
 
   Target(PVector position, float diameter) {
     this.position = position;

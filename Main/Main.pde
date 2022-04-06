@@ -5,27 +5,30 @@ ControlP5 cp5;
 Data myData;
 Target myTarget;
 Startscreen myStartscreen;
-
 String subjectId;
 int screenBorder = 25;
 int trialNum = 0;
+int trialPerComb = 1;
 
 float previousMillis = 0;
 float currentMillis;
 float movementTime;
 
 float distance;
-float targetDiameter;
+float diameter;
 
-float[] distances = { 40,80,160,320 };
-float[] diameters = { 10,20,40,80 };
+int[] dia = { 10,20,40,80 };
+int[] dist = { 40,80,160,320 };
 
 //Make a list of combinations for each diameter with all distances
-float[] parameters = {};
+ArrayList<Integer> distances = new ArrayList<Integer>();
+ArrayList<Integer> diameters = new ArrayList<Integer>();
 
+//float pix = 37.7952755906;
 
 void setup() {
-  size(750,750);
+  createCombinations();
+  size(500,500);
   background(25);
   cp5 = new ControlP5(this);
   //start = cp5.addButton("Start").setPosition((width/2)-30,20).setSize(60,20);
@@ -41,16 +44,17 @@ void draw() {
   if(myTarget != null) {
     myTarget.display();
   }
-  //myData.saveData(trialNr, targetDiameter, distance, movementTime);
 }
 
 //Get parameter should retrieve a random parameter combination from the parameters array
 //And remove this from the array afterwards 
 //+ save parameters in distance and diameter variables
-float getParameter(float[] parameters) {
-  float parameter = parameters[int(random(parameters.length))];
-  return parameter;
-
+void getParameters() {
+  int index = int(random(diameters.size()));
+  diameter = diameters.get(index); // * pix;
+  distance = distances.get(index); // * pix;
+  diameters.remove(index);
+  distances.remove(index);
 }
 
 PVector calculateNewPosition(float distance) {
@@ -74,13 +78,17 @@ double calculateDistance(int x1,int y1,int x2, int y2) {
 }
 
 void handleHit() {
+  if(trialNum >= -1 + trialPerComb * dia.length * dist.length) {
+    print("Done");
+    myTarget = null;
+  }
+  else {
   trialNum += 1;
   currentMillis = millis();
   movementTime = calculateMovementTime(previousMillis, currentMillis);
   previousMillis = currentMillis;
   
-  distance = getParameter(distances);
-  targetDiameter = getParameter(diameters);
+  getParameters();
 
   PVector newPos = calculateNewPosition(distance);
   while(newPos.x > width - (myTarget.diameter/2) - screenBorder
@@ -89,14 +97,24 @@ void handleHit() {
   || newPos.y < 0 + (myTarget.diameter/2) + screenBorder) {
     newPos = calculateNewPosition(200);
   }
-  myTarget = new Target(newPos, targetDiameter);
+  myTarget = new Target(newPos, diameter);
 
-  myData.saveData(targetDiameter, distance, movementTime, subjectId);
+  myData.saveData(diameter, distance, movementTime, subjectId);
+  }
 }
 
 void mouseClicked() {
   if(myTarget.isMouseInside()) {
     handleHit();
+  }
+}
+
+void createCombinations() {
+  for(int i = 0; i < dia.length;i++) {
+    for(int j = 0; j < dist.length;j++) {
+      diameters.add(dia[i]);
+      distances.add(dist[j]);
+    }
   }
 }
 
