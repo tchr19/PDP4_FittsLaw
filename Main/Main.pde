@@ -2,9 +2,10 @@ import controlP5.*;
 
 ControlP5 cp5;
 
-
+Data myData;
 Target myTarget;
 Startscreen myStartscreen;
+
 String subjectId;
 int screenBorder = 25;
 int trialNum = 0;
@@ -104,9 +105,10 @@ void handleHit() {
 }
 
 void mouseClicked() {
+  if(myTarget !=null){
   if(myTarget.isMouseInside()) {
     handleHit();
-  }
+  }}
 }
 
 void createCombinations() {
@@ -120,5 +122,6 @@ void createCombinations() {
 
 void Start() {
     myStartscreen.hidePage();
+    subjectId = myStartscreen.subjectID.getText();
     myTarget = new Target(new PVector(width/2, height/2),50);
   }
