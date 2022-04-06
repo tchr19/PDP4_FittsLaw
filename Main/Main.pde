@@ -2,7 +2,7 @@ import controlP5.*;
 
 ControlP5 cp5;
 
-Data myData;
+
 Target myTarget;
 Startscreen myStartscreen;
 String subjectId;
