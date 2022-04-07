@@ -1,3 +1,5 @@
+//Halløj
+
 import controlP5.*;
 
 //Import classes
@@ -20,6 +22,7 @@ float movementTime;
 //Parameter variablers
 float distance;
 float diameter;
+
 
 int[] dia = { 20,40,80,160 };
 int[] dist = { 160,320,640,1280 };
@@ -126,6 +129,8 @@ void createCombinations() {
       distances.add(dist[j]);
     }
   }
+  println(diameters);
+  println(distances);
 }
 
 //When Start is pressed
