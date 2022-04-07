@@ -24,6 +24,7 @@ class Target {
     //start timer
     //if timer reaches limit
     //return true
+    return true;
   }
   
 
