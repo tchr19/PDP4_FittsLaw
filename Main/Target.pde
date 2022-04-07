@@ -14,6 +14,18 @@ class Target {
     && mouseY>=position.y-(diameter/2) 
     && mouseY<=position.y+(diameter/2);
   }
+  
+  //Make a function that starts a timer when isMouseInside() is true 
+  //and if it reaches a certain time limit it should tell main so that a function
+  //return true 
+  //in main can handle the hit
+  boolean isClicked() {
+    //if mouseinside
+    //start timer
+    //if timer reaches limit
+    //return true
+  }
+  
 
   void display() {
     fill(targetColor);
