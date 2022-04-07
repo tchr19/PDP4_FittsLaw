@@ -35,8 +35,8 @@ ArrayList<Integer> diameters = new ArrayList<Integer>();
 void setup() {
   //Combinations of parameters created in lists
   createCombinations();
-  //size(500,500);
-  fullScreen();
+  size(500,500);
+  //fullScreen();
   background(25);
   cp5 = new ControlP5(this);
   //Target created
@@ -49,6 +49,10 @@ void draw() {
   background(25);
   if(myTarget != null) {
     myTarget.display();
+    if(myTarget.isMouseInside()) {
+      //Make other if statement to check if inside-timer-function is true
+      //Add handle hit function call, 
+  }
   }
 }
 
@@ -115,12 +119,12 @@ void handleHit() {
   }
 }
 
-void mouseClicked() {
-  if(myTarget !=null){
-  if(myTarget.isMouseInside()) {
-    handleHit();
-  }}
-}
+//void mouseClicked() {
+//  if(myTarget !=null){
+//  if(myTarget.isMouseInside()) {
+//    handleHit();
+//  }}
+//}
 
 //Creates combinations of parameters
 void createCombinations() {
