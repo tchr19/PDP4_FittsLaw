@@ -1,29 +1,20 @@
 class Startscreen {
   
+  Textlabel title;
   Button start;
-  Button stop;
-  Button[] test;
   Textfield subjectID;
-  String[] controllers;
   
   void showPage() {
+    
+  title = cp5.addTextlabel("title").setText("Fitts' Law - Touchless interaction\n").setPosition(width/2-75,25);
+  
   subjectID =  cp5.addTextfield("Subject ID")
-     .setPosition(width/2-80,50)
-     .setSize(200,25)
-     .setColorBackground(color(255))
-     .setFont(createFont("arial", 20))
-     .setFocus(true)
-     .setColor(color(0))
-     ;  
+     .setPosition(width/2-100,150)
+     .setSize(200,25);  
    
   start = cp5.addButton("Start")
-     .setPosition((width/2)-30,200)
-     .setSize(100, 40)
-     .setFont(createFont("arial", 15))
-     .setColorBackground(color(255))
-     .setColorForeground(color(180))
-     .setColorActive(color(#b4a7d6))
-     .setColorLabel(color(0));
+     .setPosition(width/2-50,250)
+     .setSize(100, 40);
     
   //Make subject id field that takes input and saves to subjectId variable
   
@@ -32,6 +23,7 @@ class Startscreen {
   }
   
   void hidePage() {
+    title.hide();
     start.hide();
     subjectID.hide();
     // Instead of calling hide on each element, 
