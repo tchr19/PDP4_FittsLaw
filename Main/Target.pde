@@ -19,17 +19,10 @@ class Target {
   //and if it reaches a certain time limit it should tell main so that a function
   //return true 
   //in main can handle the hit
-  boolean isClicked() {
-    //if mouseinside
-    //start timer
-    //if timer reaches limit
-    //return true
-    return true;
-  }
   
 
   void display() {
     fill(targetColor);
     ellipse(position.x, position.y, diameter, diameter);
   }
-}
+  }
