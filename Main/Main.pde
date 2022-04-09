@@ -5,6 +5,7 @@ import processing.video.*;
 import processing.serial.*;
 
 //Import classes
+Timer myTimer;
 States state;
 ControlP5 cp5;
 Capture video;
@@ -69,9 +70,11 @@ void setup() {
   cp5 = new ControlP5(this);
   //Target created
   myData = new Data();
+  myTimer = new Timer();
   myStartscreen = new StartScreen();
   myIntroScreen = new IntroScreen();
   myStartscreen.showPage();
+  myTimer.startTimer();
 }
 
 void draw() {
@@ -79,8 +82,13 @@ void draw() {
   if(myTarget != null) {
     myTarget.display();
     if(myTarget.isMouseInside()) {
-      //Make other if statement to check if inside-timer-function is true
-      //Add handle hit function call, 
+      myTimer.startTimer();
+    }
+    else {
+      myTimer.resetTimer();
+    }
+    if(myTimer.waitTime(500)) {
+      handleHit();
     }
   }
   
@@ -248,16 +256,13 @@ boolean checkFingers(int[] data, int[] reference) {
 
 void raiseHand() {
   if(fingersUp) {
-      if(!timerStarted) {
-        time = millis();
-        timerStarted = true;
-      }
+      myTimer.startTimer();
     } else {
-      time = millis();
+      myTimer.resetTimer();
     }
-    if(millis() > time + 1000) {
-      myIntroScreen.raiseHand.setText("CORRECT").setColor(color(0,255,0));
-      hand_img = loadImage("point.png");
+  if(myTimer.waitTime(2000)) {
+    myIntroScreen.raiseHand.setText("CORRECT").setColor(color(0,255,0));
+    hand_img = loadImage("point.png");
     } 
   }
 
