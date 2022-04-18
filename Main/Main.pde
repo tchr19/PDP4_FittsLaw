@@ -1,5 +1,3 @@
-//Hey
-
 import controlP5.*;
 import processing.video.*;
 import processing.serial.*;
@@ -11,6 +9,8 @@ ControlP5 cp5;
 Capture video;
 Data myData;
 Target myTarget;
+Target targetFill;
+//Import screen classes
 StartScreen myStartscreen;
 IntroScreen myIntroScreen;
 
@@ -21,17 +21,24 @@ int xPos, yPos;
 String[] Ports = Serial.list();
 int[] bytesArray = new int[5];
 int[] allFingersUp = {1,1,1,1,1};
+int[] oneFingerUp = {0,1,0,0,0};
 int serialCounter = 0;
 
-boolean fingersUp;
-int time;
-boolean timerStarted = false;
+
+
 //Variables
+PVector famTargetPosition;
+int selectDelay = 500;
+color targetColor = color(255,0,0);
+color fillTargetColor = color(255,255,255,200);
+PVector targetPosition;
 String subjectId;
 PImage hand_img;
 int screenBorder = 25;
 int trialNum = 0;
-int trialPerComb = 1;
+int trialPerComb = 4;
+boolean allFingUp = false;
+boolean oneFingUp = false;
 
 //Time variables
 float previousMillis = 0;
@@ -40,33 +47,36 @@ float movementTime;
 
 //Parameter variablers
 float distance;
-float diameter;
+float diameter = 50;
 
-
+//Sets of distances and diameters
 int[] dia = { 20,40,80,160 };
-int[] dist = { 160,320,640,1280 };
+int[] dist = { 160,360,560,760};
 
 //Make a list of combinations for each diameter with all distances
 ArrayList<Integer> distances = new ArrayList<Integer>();
 ArrayList<Integer> diameters = new ArrayList<Integer>();
 
 void setup() {
-  String portName = Ports[3];
+  String portName = Ports[4];
   myPort = new Serial(this,portName,9600);
   //Combinations of parameters created in lists
   createCombinations();
-  
+  famTargetPosition = new PVector(width/2, height/2);
   //Set start state
   state = States.STARTSCREEN;
   
   //Video settings for intro-screen
-  video = new Capture(this, 640, 480);
-  video.start();
   hand_img = loadImage("hand.png");
   
-  size(500,500);
-  //fullScreen();
+  //size(500,500);
+  
+  fullScreen();
   background(25);
+  noStroke();
+  targetPosition = new PVector(width/2, height/2);
+  print(width);
+  print(height);
   cp5 = new ControlP5(this);
   //Target created
   myData = new Data();
@@ -83,11 +93,13 @@ void draw() {
     myTarget.display();
     if(myTarget.isMouseInside()) {
       myTimer.startTimer();
+      targetFill = new Target(targetPosition, diameter * (float)(millis() - myTimer.time) / selectDelay,fillTargetColor);
+      targetFill.display();
     }
     else {
       myTimer.resetTimer();
     }
-    if(myTimer.waitTime(500)) {
+    if(myTimer.waitTime(selectDelay)) {
       handleHit();
     }
   }
@@ -103,9 +115,15 @@ void draw() {
     raiseHand();
     break;
   case INTRO_raiseFinger:
-    
+    showVideo();
+    if(waitedTime(2000)) {
+      raiseFinger();
+    }
     break;
+  case INTRO_selectTarget:
+      showVideo();
   }
+  
 }
 
 //Get parameter should retrieve a random parameter combination from the parameters array
@@ -120,12 +138,12 @@ void getParameters() {
 }
 
 //Calculates new position of target
-PVector calculateNewPosition(float distance) {
+PVector calculateTargetPosition(float distance) {
   float angle = random(360);
   float x = mouseX + distance * cos(angle);
   float y = mouseY + distance * sin(angle);
-  PVector newPos = new PVector(x,y);
-  return newPos;
+  targetPosition = new PVector(x,y);
+  return targetPosition;
 }
 
 //This function calculates the time between clicks (MT)
@@ -141,7 +159,8 @@ double calculateDistance(int x1,int y1,int x2, int y2) {
 }
 
 //Function is called everytime a target is hit
-void handleHit() {
+void handleHit() { //<>//
+  myTimer.resetTimer();
   //Keeps track of amount of trials and changes state when done
   if(trialNum >= -1 + trialPerComb * dia.length * dist.length) {
     print("Done");
@@ -149,58 +168,48 @@ void handleHit() {
   }
   
   else {
-  trialNum += 1;
+  
   currentMillis = millis();
   movementTime = calculateMovementTime(previousMillis, currentMillis);
   previousMillis = currentMillis;
+  println("dist: " + distance);
+  println("dia: " + diameter);
+  println(Math.log((distance/diameter)+1) / Math.log(2));
+  println("movement time: " + movementTime);
+  myData.saveData(trialNum,diameter, distance, movementTime, subjectId);
+  trialNum += 1;
   
   //Save parameters for next target in "distance" and "diameter" variables
   getParameters();
   
   //Calculate target position within borders of screen
-  PVector newPos = calculateNewPosition(distance);
-  while(newPos.x > width - (myTarget.diameter/2) - screenBorder
-  || newPos.x < 0 + (myTarget.diameter/2) + screenBorder
-  || newPos.y > height - (myTarget.diameter/2) - screenBorder
-  || newPos.y < 0 + (myTarget.diameter/2) + screenBorder) {
-    newPos = calculateNewPosition(200);
+  PVector targetPosition = calculateTargetPosition(distance);
+  
+  while(targetPosition.x > width - (myTarget.diameter/2) - screenBorder
+  || targetPosition.x < 0 + (myTarget.diameter/2) + screenBorder
+  || targetPosition.y > height - (myTarget.diameter/2) - screenBorder
+  || targetPosition.y < 0 + (myTarget.diameter/2) + screenBorder) {
+     targetPosition = calculateTargetPosition(distance);
   }
-  myTarget = new Target(newPos, diameter);
+  myTarget = new Target(targetPosition, diameter, targetColor);
 
-  myData.saveData(diameter, distance, movementTime, subjectId);
   }
 }
 
-//void mouseClicked() {
-//  if(myTarget !=null){
-//  if(myTarget.isMouseInside()) {
-//    handleHit();
-//  }}
-//}
 
 void captureEvent(Capture video) {
   video.read();
 }
 
 void serialEvent(Serial myPort) {
-  //byteIn gemmer det byte der bliver læst i serial port
   byteIn = myPort.read();
-  //Dette byte gemmes på den "serialCounter" plads i bytesArray
   bytesArray[serialCounter] = byteIn;
   
-  //serialCounter forøges med 1
   serialCounter++;
   
-  //Hvis serialCounter bliver større eller lig med 2
   if(serialCounter >= 5) {
-    if(checkFingers(bytesArray, allFingersUp)) {
-      fingersUp = true;
-    }
-    else {
-      fingersUp = false;
-    }
-    // Bliver xPos og yPos sat til de læste værdier
-    // Og serial går i nul
+    allFingUp = checkFingers(bytesArray,allFingersUp);
+    oneFingUp = checkFingers(bytesArray, oneFingerUp);
     serialCounter = 0;
   }
 }
@@ -209,12 +218,15 @@ void serialEvent(Serial myPort) {
 void createCombinations() {
   for(int i = 0; i < dia.length;i++) {
     for(int j = 0; j < dist.length;j++) {
-      diameters.add(dia[i]);
-      distances.add(dist[j]);
+      for(int k = 0; k < trialPerComb; k++) {
+        diameters.add(dia[i]);
+        distances.add(dist[j]);
+      }
     }
   }
 }
 
+//Shows video feed on screen
 void showVideo() {
   pushMatrix();
   scale(-.5, .5);
@@ -230,15 +242,18 @@ void showVideo() {
 void Start() {
     myStartscreen.hidePage();
     subjectId = myStartscreen.subjectID.getText();
-    myTarget = new Target(new PVector(width/2, height/2),50);
+    myTarget = new Target(targetPosition,diameter, targetColor);
   }
-  
+//When Intro is pressed
 void Intro() {
+  video = new Capture(this, 640, 480);
+  video.start();
   myStartscreen.hidePage();
   myIntroScreen.showPage();
   state = States.INTRO_raiseHand;
 }
 
+//Checks if all fingers are up
 boolean checkFingers(int[] data, int[] reference) {
   int correct = 0;
   for(int i = 0; i < data.length;i++) {
@@ -254,17 +269,64 @@ boolean checkFingers(int[] data, int[] reference) {
   }
 }
 
+//Function that checks if hand is raised and displays info accordingly
 void raiseHand() {
-  if(fingersUp) {
+  if(allFingUp) {
       myTimer.startTimer();
     } else {
       myTimer.resetTimer();
     }
-  if(myTimer.waitTime(2000)) {
+  if(myTimer.waitTime(1000)) {
     myIntroScreen.raiseHand.setText("CORRECT").setColor(color(0,255,0));
-    hand_img = loadImage("point.png");
+    state = States.INTRO_raiseFinger;
     } 
   }
+  
+void select_intro() {
+  if(myTarget != null) {
+    myTarget.display();
+    if(myTarget.isMouseInside()) {
+      myTimer.startTimer();
+      targetFill = new Target(famTargetPosition, diameter * (float)(millis() - myTimer.time) / selectDelay,fillTargetColor);
+      targetFill.display();
+    }
+    else {
+      myTimer.resetTimer();
+    }
+    if(myTimer.waitTime(selectDelay)) {
+      handleHit();
+    }
+  }
+  
+  }
+
+//Function that checks if f is raised and displays info accordingly
+void raiseFinger() {
+  hand_img = loadImage("point.png");
+  myIntroScreen.raiseHand.setText("Now hold only your index finger up").setColor(color(255));
+  if(oneFingUp) {
+      myTimer.startTimer();
+    } else {
+      myTimer.resetTimer();
+    }
+  if(myTimer.waitTime(500)) {
+    myIntroScreen.raiseHand.setText("CORRECT").setColor(color(0,255,0));
+    myTarget = new Target(famTargetPosition, 100, targetColor);
+    state = States.INTRO_selectTarget;
+    } 
+  }
+
+//Function for waiting certain time
+boolean waitedTime(int delay) {
+  myTimer.startTimer();
+  if(myTimer.waitTime(delay)) {
+    return true;
+  }
+  else {
+    return false;
+  }
+  
+}
 
 void stop() {
   myPort.clear();
