@@ -1,11 +1,12 @@
 class Target {
   float diameter;
   PVector position;
-  color targetColor = color(255,0,0); // Target Color
+  color targetColor; // Target Color
 
-  Target(PVector position, float diameter) {
+  Target(PVector position, float diameter, color targetColor) {
     this.position = position;
     this.diameter = diameter;
+    this.targetColor = targetColor;
   }
 
   boolean isMouseInside() {
