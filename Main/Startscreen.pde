@@ -1,7 +1,8 @@
-class Startscreen {
+class StartScreen {
   
   Textlabel title;
   Button start;
+  Button intro;
   Textfield subjectID;
   
   void showPage() {
@@ -15,8 +16,13 @@ class Startscreen {
   start = cp5.addButton("Start")
      .setPosition(width/2-50,250)
      .setSize(100, 40);
+  
+  intro = cp5.addButton("Intro")
+     .setPosition(width/2-50,300)
+     .setSize(100, 40);
+ 
     
-  //Make subject id field that takes input and saves to subjectId variable
+  //Make subject id field that takes input and saves to su250ctId variable
   
   //Add all elements to an array
   
@@ -26,6 +32,7 @@ class Startscreen {
     title.hide();
     start.hide();
     subjectID.hide();
+    intro.hide();
     // Instead of calling hide on each element, 
     //make a for loop that calls hide on all elements in array
   }
