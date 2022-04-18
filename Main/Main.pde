@@ -1,14 +1,34 @@
+//Hey
+
 import controlP5.*;
-//Hi
+import processing.video.*;
+import processing.serial.*;
 
 //Import classes
+Timer myTimer;
+States state;
 ControlP5 cp5;
+Capture video;
 Data myData;
 Target myTarget;
-Startscreen myStartscreen;
+StartScreen myStartscreen;
+IntroScreen myIntroScreen;
 
+//Serial variables
+Serial myPort;
+int byteIn;
+int xPos, yPos;
+String[] Ports = Serial.list();
+int[] bytesArray = new int[5];
+int[] allFingersUp = {1,1,1,1,1};
+int serialCounter = 0;
+
+boolean fingersUp;
+int time;
+boolean timerStarted = false;
 //Variables
 String subjectId;
+PImage hand_img;
 int screenBorder = 25;
 int trialNum = 0;
 int trialPerComb = 1;
@@ -22,6 +42,7 @@ float movementTime;
 float distance;
 float diameter;
 
+
 int[] dia = { 20,40,80,160 };
 int[] dist = { 160,320,640,1280 };
 
@@ -30,22 +51,60 @@ ArrayList<Integer> distances = new ArrayList<Integer>();
 ArrayList<Integer> diameters = new ArrayList<Integer>();
 
 void setup() {
+  String portName = Ports[3];
+  myPort = new Serial(this,portName,9600);
   //Combinations of parameters created in lists
   createCombinations();
-  //size(500,500);
-  fullScreen();
+  
+  //Set start state
+  state = States.STARTSCREEN;
+  
+  //Video settings for intro-screen
+  video = new Capture(this, 640, 480);
+  video.start();
+  hand_img = loadImage("hand.png");
+  
+  size(500,500);
+  //fullScreen();
   background(25);
   cp5 = new ControlP5(this);
   //Target created
   myData = new Data();
-  myStartscreen = new Startscreen();
+  myTimer = new Timer();
+  myStartscreen = new StartScreen();
+  myIntroScreen = new IntroScreen();
   myStartscreen.showPage();
+  myTimer.startTimer();
 }
 
 void draw() {
   background(25);
   if(myTarget != null) {
     myTarget.display();
+    if(myTarget.isMouseInside()) {
+      myTimer.startTimer();
+    }
+    else {
+      myTimer.resetTimer();
+    }
+    if(myTimer.waitTime(500)) {
+      handleHit();
+    }
+  }
+  
+  switch(state) {
+  case STARTSCREEN:
+    break;
+  case NEW_TEST:
+    myTarget.display();
+    break;
+  case INTRO_raiseHand:
+    showVideo();
+    raiseHand();
+    break;
+  case INTRO_raiseFinger:
+    
+    break;
   }
 }
 
@@ -112,11 +171,38 @@ void handleHit() {
   }
 }
 
-void mouseClicked() {
-  if(myTarget !=null){
-  if(myTarget.isMouseInside()) {
-    handleHit();
-  }}
+//void mouseClicked() {
+//  if(myTarget !=null){
+//  if(myTarget.isMouseInside()) {
+//    handleHit();
+//  }}
+//}
+
+void captureEvent(Capture video) {
+  video.read();
+}
+
+void serialEvent(Serial myPort) {
+  //byteIn gemmer det byte der bliver læst i serial port
+  byteIn = myPort.read();
+  //Dette byte gemmes på den "serialCounter" plads i bytesArray
+  bytesArray[serialCounter] = byteIn;
+  
+  //serialCounter forøges med 1
+  serialCounter++;
+  
+  //Hvis serialCounter bliver større eller lig med 2
+  if(serialCounter >= 5) {
+    if(checkFingers(bytesArray, allFingersUp)) {
+      fingersUp = true;
+    }
+    else {
+      fingersUp = false;
+    }
+    // Bliver xPos og yPos sat til de læste værdier
+    // Og serial går i nul
+    serialCounter = 0;
+  }
 }
 
 //Creates combinations of parameters
@@ -129,9 +215,58 @@ void createCombinations() {
   }
 }
 
+void showVideo() {
+  pushMatrix();
+  scale(-.5, .5);
+  translate(-200,300);
+  tint(255);
+  image(video, -video.width, 0);
+  popMatrix();
+  tint(255, 127);
+  image(hand_img, 250,200,150,150);
+}
+
 //When Start is pressed
 void Start() {
     myStartscreen.hidePage();
     subjectId = myStartscreen.subjectID.getText();
     myTarget = new Target(new PVector(width/2, height/2),50);
   }
+  
+void Intro() {
+  myStartscreen.hidePage();
+  myIntroScreen.showPage();
+  state = States.INTRO_raiseHand;
+}
+
+boolean checkFingers(int[] data, int[] reference) {
+  int correct = 0;
+  for(int i = 0; i < data.length;i++) {
+    if(data[i] == reference[i]) {
+      correct += 1;
+    }
+  }
+  if(correct == 5) {
+    return true;
+  }
+  else {
+  return false;
+  }
+}
+
+void raiseHand() {
+  if(fingersUp) {
+      myTimer.startTimer();
+    } else {
+      myTimer.resetTimer();
+    }
+  if(myTimer.waitTime(2000)) {
+    myIntroScreen.raiseHand.setText("CORRECT").setColor(color(0,255,0));
+    hand_img = loadImage("point.png");
+    } 
+  }
+
+void stop() {
+  myPort.clear();
+  //myPort.stop();
+}
